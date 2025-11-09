@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import psycopg2
+import psycopg
 import os
 from urllib.parse import urlparse
 
@@ -12,19 +12,9 @@ def hello():
 	return "Hello, Serverless! 🚀\n", 200, {"Content-Type": "text/plain"}
 
 
-# Подключение к БД по документации
+# Подключение к БД (psycopg v3, совместимо с Python 3.13)
 DATABASE_URL = os.environ.get("DATABASE_URL")
-if DATABASE_URL:
-	url = urlparse(DATABASE_URL)
-	conn = psycopg2.connect(
-		database=url.path[1:],
-		user=url.username,
-		password=url.password,
-		host=url.hostname,
-		port=url.port,
-	)
-else:
-	conn = None
+conn = psycopg.connect(DATABASE_URL) if DATABASE_URL else None
 
 
 # Создание таблицы при старте
